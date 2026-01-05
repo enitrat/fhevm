@@ -23,6 +23,8 @@ struct KmsNode {
     string ipAddress;
     /// @notice URL address of the KMS node' storage where ciphertexts are stored
     string storageUrl;
+    /// @notice HTTP API base URL for Gateway v2 (e.g., "https://kms-1.zama.ai/api")
+    string apiUrl;
 }
 
 /**
@@ -35,6 +37,8 @@ struct Coprocessor {
     address signerAddress;
     /// @notice URL address of the coprocessor's S3 bucket where ciphertexts are stored
     string s3BucketUrl;
+    /// @notice HTTP API base URL for Gateway v2 (e.g., "https://copro-1.zama.ai/api")
+    string apiUrl;
 }
 
 /**

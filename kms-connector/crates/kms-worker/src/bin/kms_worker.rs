@@ -1,4 +1,5 @@
 use kms_worker::{
+    api::{start_api_server, ApiState},
     core::{Config, KmsWorker},
     monitoring::health::HealthStatus,
 };
@@ -43,10 +44,16 @@ async fn run() -> anyhow::Result<()> {
             set_task_limit(config.task_limit);
             install_signal_handlers(cancel_token.clone())?;
             let monitoring_endpoint = config.monitoring_endpoint;
+            let api_endpoint = config.api_endpoint;
+            let signer_address = config.signer_address.clone().unwrap_or_default();
 
             info!("Starting KmsWorker");
             let (kms_worker, state) = KmsWorker::from_config(config).await?;
-            start_monitoring_server(monitoring_endpoint, state, cancel_token.clone());
+            start_monitoring_server(monitoring_endpoint, state.clone(), cancel_token.clone());
+
+            let api_state = ApiState::new(state.db_pool().clone(), signer_address);
+            start_api_server(api_endpoint, api_state, cancel_token.clone());
+
             kms_worker.start(cancel_token).await;
         }
     }

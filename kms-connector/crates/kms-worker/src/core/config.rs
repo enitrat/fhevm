@@ -77,6 +77,16 @@ pub struct Config {
     /// The timeout to perform each external service connection healthcheck.
     #[serde(with = "humantime_serde", default = "default_healthcheck_timeout")]
     pub healthcheck_timeout: Duration,
+    /// The Gateway V2 API server endpoint.
+    #[serde(default = "default_api_endpoint")]
+    pub api_endpoint: SocketAddr,
+    /// The signer address for this KMS node (for API responses).
+    #[serde(default)]
+    pub signer_address: Option<String>,
+}
+
+fn default_api_endpoint() -> SocketAddr {
+    SocketAddr::from(([0, 0, 0, 0], 8081))
 }
 
 fn default_service_name() -> String {
@@ -136,6 +146,8 @@ impl Default for Config {
             task_limit: default_task_limit(),
             monitoring_endpoint: default_monitoring_endpoint(),
             healthcheck_timeout: default_healthcheck_timeout(),
+            api_endpoint: default_api_endpoint(),
+            signer_address: None,
         }
     }
 }
